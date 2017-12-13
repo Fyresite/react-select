@@ -20,6 +20,7 @@ class Example extends Component {
     
     this.state = {
       select: ''
+      select_options: {A_key: "A-value", B_key: "B-value"}
     };
   }
   
@@ -34,7 +35,8 @@ class Example extends Component {
   render() {
     return (
       <Select
-        onChange={this.handleChange.bind(this, 'select')}
+        label="Label"
+        options={this.state.select_options}
         value={this.state.select} />
     );
   }
