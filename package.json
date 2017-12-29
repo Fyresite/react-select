@@ -1,6 +1,6 @@
 {
   "name": "@fyresite/react-select",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Barebones React select component",
   "main": "dist/Select.js",
   "scripts": {
