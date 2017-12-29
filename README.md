@@ -19,15 +19,21 @@ class Example extends Component {
     super(props);
     
     this.state = {
-      select: ''
-      select_options: {A_key: "A-value", B_key: "B-value"}
+      select: {
+        value: '',
+        valid: ''
+      },
+      options: {
+        key1: "Option 1",
+        key2: "Option 2"
+      }
     };
   }
   
-  handleChange(field, e) {
+  handleChange(field, e, selectState) {
     this.setState((prevState, props) => {
       return {
-        [field]: e.target.value
+        [field]: selectState
       };
     });
   }
@@ -36,8 +42,12 @@ class Example extends Component {
     return (
       <Select
         label="Label"
-        options={this.state.select_options}
-        value={this.state.select} />
+        onChange={this.handleChange.bind(this, 'select')}
+        options={this.state.options}
+        placeholder="Placeholder"
+        ref={el => { this.select = el; }}
+        validator={val => { return val === 'key2'; }}
+        value={this.state.value} />
     );
   }
 }
