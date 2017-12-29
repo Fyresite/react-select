@@ -34,37 +34,23 @@ var Select = function (_Component) {
     _this.id = props.id || (0, _v2.default)();
 
     _this.state = {
-      selected: false,
-      value: typeof props.value !== 'undefined' ? props.value : ''
+      value: typeof props.value !== 'undefined' ? props.value : '',
+      valid: ''
     };
 
-    _this.handleClasses = _this.handleClasses.bind(_this);
+    _this.getClasses = _this.getClasses.bind(_this);
     return _this;
   }
 
-  // invoked before a mounted component receives new props
-
-
   _createClass(Select, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      var firstOption = this.props.options[Object.keys(this.props.options)[0]];
-
-      if (nextProps.value && nextProps.value !== firstOption) {
-        this.setState({ selected: true });
-      } else {
-        this.setState({ selected: false });
-      }
-    }
-  }, {
     key: 'focus',
     value: function focus() {
-      this.refs.select.focus();
+      this.select.focus();
     }
   }, {
-    key: 'handleClasses',
-    value: function handleClasses() {
-      var classes = [];
+    key: 'getClasses',
+    value: function getClasses() {
+      var classes = ['select', 'input-field'];
 
       if (this.state.selected) {
         classes.push('selected');
@@ -83,22 +69,55 @@ var Select = function (_Component) {
   }, {
     key: 'handleChange',
     value: function handleChange(e) {
+      var _this2 = this;
+
       var value = e.target.value;
 
       this.setState(function (prevState, props) {
+        var valid = prevState.valid;
+
+        // There is probably a missed case somewhere in here
+        // Probably need to rethink the structure of this code
+        // in the future.
+
+        if (typeof _this2.props.validator === 'function') {
+          // If the input has a validator function set, we
+          // run the function and assign it's returned value
+          // to valid so we can update the state.
+          valid = _this2.props.validator(value);
+        } else {
+          // Since the value of the placeholder is null, e.target.value returns 
+          if (typeof _this2.props.placeholder !== 'undefined' && value === _this2.props.placeholder) {
+            value = '';
+            valid = '';
+          } else {
+            valid = true;
+          }
+        }
+
+        // Since the value of the placeholder is null, e.target.value returns 
+        if (typeof _this2.props.placeholder !== 'undefined' && value === _this2.props.placeholder) {
+          value = '';
+        }
+
         return {
-          value: value
+          value: value,
+          valid: valid
         };
+      }, function () {
+        if (typeof _this2.props.onChange === 'function') {
+          _this2.props.onChange(e, _this2.state);
+        }
       });
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       return _react2.default.createElement(
         'div',
-        { className: 'select input-field ' + this.handleClasses() },
+        { className: this.getClasses() },
         typeof this.props.label !== 'undefined' ? _react2.default.createElement(
           'label',
           { htmlFor: this.id },
@@ -109,18 +128,23 @@ var Select = function (_Component) {
           {
             id: this.id,
             ref: function ref(el) {
-              return _this2.select = el;
+              return _this3.select = el;
             },
             disabled: this.props.disabled || false,
             readOnly: this.props.readonly || false,
             value: this.state.value,
-            onChange: this.handleChange.bind(this)
-          },
+            onChange: this.handleChange.bind(this) },
+          typeof this.props.placeholder !== 'undefined' ? _react2.default.createElement(
+            'option',
+            { key: (0, _v2.default)(), value: null },
+            this.props.placeholder
+          ) : '',
           typeof this.props.options !== 'undefined' ? Object.keys(this.props.options).map(function (key) {
-            var value = _this2.props.options[key];
+            var value = _this3.props.options[key];
+
             return _react2.default.createElement(
               'option',
-              { key: '' + (0, _v2.default)(), value: key },
+              { key: (0, _v2.default)(), value: key },
               value
             );
           }) : ''

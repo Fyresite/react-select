@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import uuidv4 from 'uuid/v4';
 
 class Select extends Component {
-
   constructor(props) {
     super(props);
 
@@ -10,30 +9,19 @@ class Select extends Component {
     this.id = props.id || uuidv4();
 
     this.state = {
-      selected: false,
-      value: typeof props.value !== 'undefined' ? props.value : ''
+      value: typeof props.value !== 'undefined' ? props.value : '',
+      valid: ''
     };
 
-    this.handleClasses = this.handleClasses.bind(this);
-  }
-
-  // invoked before a mounted component receives new props
-  componentWillReceiveProps(nextProps) {
-    let firstOption = this.props.options[Object.keys(this.props.options)[0]];
-
-    if (nextProps.value && nextProps.value !== firstOption) {
-      this.setState({ selected: true });
-    } else {
-      this.setState({ selected: false });
-    }
+    this.getClasses = this.getClasses.bind(this);
   }
 
   focus() {
-    this.refs.select.focus();
+    this.select.focus();
   }
 
-  handleClasses() {
-    let classes = [];
+  getClasses() {
+    let classes = ['select', 'input-field'];
 
     if (this.state.selected) {
       classes.push('selected');
@@ -54,15 +42,46 @@ class Select extends Component {
     let value = e.target.value;
 
     this.setState((prevState, props) => {
+      let valid = prevState.valid;
+
+      // There is probably a missed case somewhere in here
+      // Probably need to rethink the structure of this code
+      // in the future.
+
+      if (typeof this.props.validator === 'function') {
+        // If the input has a validator function set, we
+        // run the function and assign it's returned value
+        // to valid so we can update the state.
+        valid = this.props.validator(value);
+      } else {
+        // Since the value of the placeholder is null, e.target.value returns 
+        if (typeof this.props.placeholder !== 'undefined' && value === this.props.placeholder) {
+          value = '';
+          valid = '';
+        } else {
+          valid = true;
+        }
+      }
+
+      // Since the value of the placeholder is null, e.target.value returns 
+      if (typeof this.props.placeholder !== 'undefined' && value === this.props.placeholder) {
+        value = '';
+      }
+
       return {
-        value
+        value,
+        valid
       };
+    }, () => {
+      if (typeof this.props.onChange === 'function') {
+        this.props.onChange(e, this.state);
+      }
     });
   }
 
   render() {
     return (
-      <div className={`select input-field ${this.handleClasses()}`}>
+      <div className={this.getClasses()}>
         { typeof this.props.label !== 'undefined' ? <label htmlFor={this.id}>{this.props.label}</label> : '' }
         <select
           id={this.id}
@@ -70,15 +89,20 @@ class Select extends Component {
           disabled={this.props.disabled || false}
           readOnly={this.props.readonly || false}
           value={this.state.value}
-          onChange={this.handleChange.bind(this)}
-        >
+          onChange={this.handleChange.bind(this)}>
+          {
+            typeof this.props.placeholder !== 'undefined' ?
+              <option key={uuidv4()} value={null}>{this.props.placeholder}</option>
+              : ''
+          }
           {
             typeof this.props.options !== 'undefined' ? 
-            Object.keys(this.props.options).map((key) => {
-              let value = this.props.options[key]
-              return <option key={`${uuidv4()}`} value={key}>{value}</option>;
-            }) :
-            ''
+              Object.keys(this.props.options).map(key => {
+                let value = this.props.options[key];
+
+                return <option key={uuidv4()} value={key}>{value}</option>;
+              })
+              : ''
           }
         </select>
       </div>
