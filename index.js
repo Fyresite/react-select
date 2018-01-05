@@ -14,30 +14,45 @@ class Select extends Component {
     };
 
     this.getClasses = this.getClasses.bind(this);
+    this.validate = this.validate.bind(this);
+  }
+  
+  getClasses() {
+    let classes = ['select', 'input-field'];
+    
+    if (this.state.selected) {
+      classes.push('selected');
+    }
+    
+    if (this.props.value && this.props.value.length > 0 && this.props.valid) {
+      classes.push('valid');
+    }
+    
+    if (this.props.valid === false) {
+      classes.push('invalid');
+    }
+    
+    return classes.join(' ');
   }
 
   focus() {
     this.select.focus();
   }
 
-  getClasses() {
-    let classes = ['select', 'input-field'];
+  validate() {
+    let valid = '';
 
-    if (this.state.selected) {
-      classes.push('selected');
+    if (typeof this.props.validator === 'function') {
+      valid = this.props.validator(this.state.value);
     }
 
-    if (this.props.value && this.props.value.length > 0 && this.props.valid) {
-      classes.push('valid');
-    }
+    this.setState((state, props) => {
+      return { valid };
+    });
 
-    if (this.props.valid === false) {
-      classes.push('invalid');
-    }
-
-    return classes.join(' ');
+    return valid;
   }
-
+  
   handleChange(e) {
     let value = e.target.value;
 

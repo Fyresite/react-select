@@ -39,15 +39,11 @@ var Select = function (_Component) {
     };
 
     _this.getClasses = _this.getClasses.bind(_this);
+    _this.validate = _this.validate.bind(_this);
     return _this;
   }
 
   _createClass(Select, [{
-    key: 'focus',
-    value: function focus() {
-      this.select.focus();
-    }
-  }, {
     key: 'getClasses',
     value: function getClasses() {
       var classes = ['select', 'input-field'];
@@ -65,6 +61,26 @@ var Select = function (_Component) {
       }
 
       return classes.join(' ');
+    }
+  }, {
+    key: 'focus',
+    value: function focus() {
+      this.select.focus();
+    }
+  }, {
+    key: 'validate',
+    value: function validate() {
+      var valid = '';
+
+      if (typeof this.props.validator === 'function') {
+        valid = this.props.validator(this.state.value);
+      }
+
+      this.setState(function (state, props) {
+        return { valid: valid };
+      });
+
+      return valid;
     }
   }, {
     key: 'handleChange',
