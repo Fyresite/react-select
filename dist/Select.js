@@ -60,6 +60,10 @@ var Select = function (_Component) {
         classes.push('invalid');
       }
 
+      if (typeof this.props.className !== 'undefined') {
+        classes.push(this.props.className);
+      }
+
       return classes.join(' ');
     }
   }, {
@@ -131,6 +135,12 @@ var Select = function (_Component) {
     value: function render() {
       var _this3 = this;
 
+      var selectClasses = [];
+
+      if (typeof this.props.selectClassNames !== 'undefined') {
+        selectClasses.push(this.props.selectClassNames);
+      }
+
       return _react2.default.createElement(
         'div',
         { className: this.getClasses() },
@@ -142,6 +152,7 @@ var Select = function (_Component) {
         _react2.default.createElement(
           'select',
           {
+            className: selectClasses.join(' '),
             id: this.id,
             ref: function ref(el) {
               return _this3.select = el;

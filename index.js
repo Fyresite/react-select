@@ -31,6 +31,10 @@ class Select extends Component {
     if (this.props.valid === false) {
       classes.push('invalid');
     }
+
+    if (typeof this.props.className !== 'undefined') {
+      classes.push(this.props.className);
+    }
     
     return classes.join(' ');
   }
@@ -95,10 +99,17 @@ class Select extends Component {
   }
 
   render() {
+    let selectClasses = [];
+
+    if (typeof this.props.selectClassNames !== 'undefined') {
+      selectClasses.push(this.props.selectClassNames);
+    }
+
     return (
       <div className={this.getClasses()}>
         { typeof this.props.label !== 'undefined' ? <label htmlFor={this.id}>{this.props.label}</label> : '' }
         <select
+          className={selectClasses.join(' ')}
           id={this.id}
           ref={el => this.select = el}
           disabled={this.props.disabled || false}
