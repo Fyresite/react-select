@@ -137,8 +137,8 @@ var Select = function (_Component) {
 
       var selectClasses = [];
 
-      if (typeof this.props.selectClassNames !== 'undefined') {
-        selectClasses.push(this.props.selectClassNames);
+      if (typeof this.props.selectClassName !== 'undefined') {
+        selectClasses.push(this.props.selectClassName);
       }
 
       return _react2.default.createElement(
