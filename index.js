@@ -101,8 +101,8 @@ class Select extends Component {
   render() {
     let selectClasses = [];
 
-    if (typeof this.props.selectClassNames !== 'undefined') {
-      selectClasses.push(this.props.selectClassNames);
+    if (typeof this.props.selectClassName !== 'undefined') {
+      selectClasses.push(this.props.selectClassName);
     }
 
     return (
