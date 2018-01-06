@@ -16,6 +16,19 @@ class Select extends Component {
     this.getClasses = this.getClasses.bind(this);
     this.validate = this.validate.bind(this);
   }
+
+  componentWillUpdate(prevProps, prevState) {
+    if (prevProps.value !== this.props.value) {
+      let state = Object.assign({}, this.state);
+
+      state.value = this.props.value;
+      state.valid = typeof this.props.validator === 'function' ? this.props.validator() : state.valid;
+
+      this.setState((prevState, props) => {
+        return state;
+      });
+    }
+  }
   
   getClasses() {
     let classes = ['select', 'input-field'];
