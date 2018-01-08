@@ -17,7 +17,7 @@ class Select extends Component {
     this.validate = this.validate.bind(this);
   }
 
-  componentWillUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.value !== this.props.value) {
       let state = Object.assign({}, this.state);
 

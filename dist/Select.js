@@ -44,6 +44,20 @@ var Select = function (_Component) {
   }
 
   _createClass(Select, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (prevProps.value !== this.props.value) {
+        var state = Object.assign({}, this.state);
+
+        state.value = this.props.value;
+        state.valid = typeof this.props.validator === 'function' ? this.props.validator() : state.valid;
+
+        this.setState(function (prevState, props) {
+          return state;
+        });
+      }
+    }
+  }, {
     key: 'getClasses',
     value: function getClasses() {
       var classes = ['select', 'input-field'];
